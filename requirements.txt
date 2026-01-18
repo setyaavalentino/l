@@ -1,0 +1,15 @@
+streamlit
+pandas
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+requests
+ffmpeg-python
+opencv-python-headless
+pillow
+numpy
+yt-dlp
+psutil
+pytz
+gdown
