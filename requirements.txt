@@ -33,4 +33,3 @@ pytube
 pytz
 requests
 streamlit
-yt-dlp
