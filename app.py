@@ -632,9 +632,31 @@ def run_ffmpeg_enhanced(main_video, random_video_folder, stream_key, is_shorts, 
 def run_ffmpeg(video_path, stream_key, is_shorts, log_callback, rtmp_url=None, session_id=None):
     """Run FFmpeg for streaming with enhanced logging"""
     output_url = rtmp_url or f"rtmp://a.rtmp.youtube.com/live2/{stream_key}"
-    scale = "-vf scale=720:1280" if is_shorts else ""
+    # Ensure video_path is an absolute path or relative to current working directory
+    if not os.path.exists(video_path):
+        log_callback(f"❌ Video file not found: {video_path}")
+        return
+
+    # Use a loop if needed, for now streaming once
+    scale = "scale=720:1280" if is_shorts else "scale=1920:1080"
+    
     cmd = [
         "ffmpeg", "-re", "-stream_loop", "-1", "-i", video_path,
+        "-c:v", "libx264", "-preset", "veryfast", "-b:v", "3000k",
+        "-maxrate", "3000k", "-bufsize", "6000k",
+        "-pix_fmt", "yuv420p", "-g", "60",
+        "-vf", scale,
+        "-c:a", "aac", "-b:a", "128k", "-ar", "44100",
+        "-f", "flv", output_url
+    ]
+    
+    try:
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        for line in process.stdout:
+            log_callback(line.strip())
+        process.wait()
+    except Exception as e:
+        log_callback(f"❌ FFmpeg Error: {e}")
         "-c:v", "libx264", "-preset", "veryfast", "-b:v", "2500k",
         "-maxrate", "2500k", "-bufsize", "5000k",
         "-g", "60", "-keyint_min", "60",

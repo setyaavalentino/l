@@ -1,10 +1,4 @@
 modules = ["python-3.11"]
-[agent]
-expertMode = true
-
-[nix]
-channel = "stable-25_05"
-packages = ["ffmpeg", "ffmpeg-full", "freetype", "glibcLocales", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "tcl", "tk", "zlib"]
 
 [workflows]
 runButton = "Project"
@@ -24,7 +18,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m streamlit run app.py"
+args = "python -m streamlit run app.py --server.port 5000 --server.address 0.0.0.0"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
@@ -34,6 +28,9 @@ outputType = "webview"
 localPort = 5000
 externalPort = 80
 
-[deployment]
-deploymentTarget = "autoscale"
-run = ["python", "-m", "streamlit", "run", "app.py", "--server.port=5000", "--server.address=0.0.0.0"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+packages = ["ffmpeg-full", "freetype", "glibcLocales", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "tcl", "tk", "zlib"]
